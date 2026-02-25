@@ -45,4 +45,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function calocation(){
+    return $this->belongsToMany(Calocation::class,'memberships')->withPivot(['type', 'status', 'left_at','token','sold']);
+ }
+
+  public function depenses(){
+      return  $this->hasMany(Depense::class);
+}
+
+ public function Payment(){
+      return  $this->hasMany(Payment::class);
+}
 }
