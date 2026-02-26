@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalocationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::prefix('/calocation')->controller(CalocationController::class)->group( function() {
+    Route::get('/index','index')->name('calocation.index');
+});

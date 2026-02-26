@@ -12,8 +12,8 @@ class Calocation extends Model
     return $this->belongsToMany(User::class,'memberships')->withPivot(['type', 'status', 'left_at','token','sold']);
  }
 
-  public function depenses(){
-      return  $this->hasMany(Depense::class);
+  public function category(){
+      return  $this->hasMany(category::class);
 }
 
  public function Payment(){
