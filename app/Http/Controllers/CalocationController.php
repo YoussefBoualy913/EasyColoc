@@ -18,10 +18,23 @@ class CalocationController extends Controller
      */
     public function index()
     {   
-         $user = Auth::user();
-        $calocation =  $user->calocation()->with('depenses')->where('status','active');
-        // dd($calocation->toRawSql());
-        return view('calocation.index',compact('calocation'));
+        $user = Auth::user();
+        $calocation =  $user->calocations()->where('calocations.status','active')->with(['categories.depenses.user'])->first();
+        if($calocation){
+        $users = $calocation->users()->get();
+
+        $isOwner = $users->where('id',  $user->id)->first()?->pivot->type === 'owner';
+        $data =[
+            'calocation'=>$calocation,
+            'users'=>$users,
+            'isOwner'=>$isOwner,
+        ];
+        
+        return view('calocations.index',$data);
+        }
+        if(!$calocation){
+        return view('calocations.nocalocation');
+        }
         }
         
         /**
@@ -30,7 +43,7 @@ class CalocationController extends Controller
         public function create()
         {
             
-            return view('calocation.create');
+            return view('calocations.create');
         }
 
     /**
@@ -38,21 +51,27 @@ class CalocationController extends Controller
      */
     public function store(CalocationRequeste $request)
     {
+        
         DB::transaction(function () use ($request) {
    
             $calocation = Calocation::create($request->validated());
-           
             if($request->has('categories')){
-                $data = [];
+               
                 foreach($request->categories as $category){
-                  $data = ['name'=>$category,'Calocation_id'=>$calocation->id];
+                   $data[] = [
+                      'name' => $category,
+                      'calocation_id' => $calocation->id,
+                      'created_at' => now(),
+                      'updated_at' => now(),
+                     ];
                 }
-            category::create($data);
+                Category::insert($data);
+               
             }
-            $user = Auth::user();
 
+            $user = Auth::user();
             Membership::create([
-                'Calocation_id'=> $calocation->id,
+                'calocation_id'=> $calocation->id,
                 'user_id'=> $user->id,
                 'type'=> 'owner',
                 'status'=> 'active',
@@ -60,6 +79,7 @@ class CalocationController extends Controller
             ]);
     
         });
+     return redirect()->route('colocations.index');
     }
 
     /**
@@ -91,6 +111,7 @@ class CalocationController extends Controller
      */
     public function destroy(Calocation $calocation)
     {
-        //
+        $calocation->delete();
+        return redirect()->route('colocations.index');
     }
 }

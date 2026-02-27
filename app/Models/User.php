@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function calocation(){
+    public function calocations(){
     return $this->belongsToMany(Calocation::class,'memberships')->withPivot(['type', 'status', 'left_at','token','sold']);
  }
 
@@ -56,5 +56,15 @@ class User extends Authenticatable
 
  public function Payment(){
       return  $this->hasMany(Payment::class);
+}
+
+public function getInitialsAttribute()
+{
+    $parts = explode(' ', trim($this->name));
+
+    $first = $parts[0][0] ?? '';
+    $second = $parts[1][0] ?? '';
+
+    return strtoupper($first . $second);
 }
 }

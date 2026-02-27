@@ -21,4 +21,8 @@ class Payment extends Model
      public function user(){
       return  $this->belongsTo(User::class);
     }
+
+     public function depense(){
+      return  $this->belongsTo(Depense::class);
+    }
 }

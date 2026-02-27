@@ -9,6 +9,8 @@ class Membership extends Model
     
 
 protected $fillable = [
+    'user_id',
+    'calocation_id',
     'type',
     'status',
     'sold',

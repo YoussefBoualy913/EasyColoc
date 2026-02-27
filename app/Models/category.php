@@ -8,6 +8,7 @@ class category extends Model
 {
      protected $fillable = [
         'name',
+        'calocation_id',
     ];
 
      protected $guarded = [

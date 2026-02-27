@@ -8,7 +8,10 @@ class Depense extends Model
 {
      protected $fillable = [
         'titre',
-        'montant'
+        'montant',
+        'date',
+        'user_id',
+        'category_id',
     ];
 
      protected $guarded = [
@@ -23,7 +26,7 @@ class Depense extends Model
       return  $this->belongsTo(User::class);
     }
 
-     public function calocation(){
-      return  $this->belongsTo(Calocation::class);
+     public function payment(){
+      return  $this->hasMany(Payment::class);
     }
 }
