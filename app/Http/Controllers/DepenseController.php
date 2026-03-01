@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\storeDepenesRequest;
 use App\Models\Calocation;
 use App\Models\Depense;
+use App\Services\ColocationService;
+use App\Services\DepenseService;
 use Illuminate\Http\Request;
 
 class DepenseController extends Controller
@@ -28,28 +30,9 @@ class DepenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(storeDepenesRequest $request,Calocation $calocation)
+    public function store(storeDepenesRequest $request,Calocation $calocation ,DepenseService $depenseservise,ColocationService $colocationService)
     {
-        $data = $request->validated(); 
-        // dd($calocation->users()->where('users.id', $data['user_id'])->exists());
-        abort_if(
-        ! $calocation->users()->where('users.id', $data['user_id'])->exists(),
-        403
-       );
-
-    abort_if(
-        ! $calocation->categories()->where('categories.id', $data['category_id'])->exists(),
-        403
-    );
-  
-    Depense::create([
-        'titre'       => $data['titre'],
-        'montant'      => $data['montant'],
-        'date'        => $data['date'],
-        'user_id'    => $data['user_id'],
-        'category_id' => $data['category_id'],
-    ]);
-
+      $depenseservise->store($request,$calocation,$colocationService);
     return back()->with('success', 'Dépense ajoutée avec succès');
     }
 
@@ -81,8 +64,20 @@ class DepenseController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Depense $depense)
-    {
-        $depense->delete();
-       return redirect()->route('colocations.index');
+    {   
+        $isNot_paid = $depense->payments()->where('payments.status','pending')->exists();
+        if($isNot_paid)
+            {
+                return back()->with('message','le depense doit etre payer');
+            }
+        
+        if(!$isNot_paid)
+            {  
+                 $depense->delete();
+                return back()->with('message','le depense doit a etait supprimer avec succer');
+            }
+        
+       
+      
     }
 }

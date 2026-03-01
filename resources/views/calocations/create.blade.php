@@ -42,13 +42,13 @@
                     </svg>
                     Dashboard
                 </a>
-                <a href="{{ route('colocations.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium text-sm transition">
+               <a href="{{ route('colocations.index')}}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium text-sm mt-2 transition">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
                     </svg>
-                    Ma Colocation
+                    Toutes les Colocs
                 </a>
                 <a href="create-colocation.html"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-medium text-sm transition">
@@ -72,10 +72,10 @@
                 <div class="flex items-center gap-3 px-3 py-2">
                     <div
                         class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm">
-                        JD</div>
+                        {{auth()->user()->initials}}</div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-slate-900 truncate">Jean Dupont</p>
-                        <p class="text-xs text-slate-500 truncate">jean@example.com</p>
+                        <p class="text-sm font-semibold text-slate-900 truncate">{{auth()->user()->name}}</p>
+                        <p class="text-xs text-slate-500 truncate">{{auth()->user()->email}}</p>
                     </div>
                     <a href="landing.html"
                         class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition">
@@ -231,7 +231,7 @@
 
                             <!-- Actions -->
                             <div class="flex items-center gap-3 pt-2">
-                                <a href="dashboard.html"
+                                <a href="{{ route('colocations.index')}}"
                                     class="flex-1 py-3 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition text-center">
                                     Annuler
                                 </a>

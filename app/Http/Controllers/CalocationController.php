@@ -7,6 +7,7 @@ use App\Models\Calocation;
 use App\Models\category;
 use App\Models\Membership;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,23 +17,21 @@ class CalocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserService $userservice)
     {   
         $user = Auth::user();
-        $calocation =  $user->calocations()->where('calocations.status','active')->with(['categories.depenses.user'])->first();
-        if($calocation){
-        $users = $calocation->users()->get();
-
-        $isOwner = $users->where('id',  $user->id)->first()?->pivot->type === 'owner';
+        $is_exists =  $user->calocations()->with(['users','categories.depenses.user'])->exists();
+        if($is_exists){
+         $calocations = $user->calocations()->with(['users','categories.depenses.user'])->paginate(3);
+       
         $data =[
-            'calocation'=>$calocation,
-            'users'=>$users,
-            'isOwner'=>$isOwner,
+            'calocations'=>$calocations,
+            'userservice'=>$userservice
         ];
         
         return view('calocations.index',$data);
         }
-        if(!$calocation){
+        if(!$is_exists){
         return view('calocations.nocalocation');
         }
         }
@@ -85,9 +84,29 @@ class CalocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Calocation $calocation)
+    public function show(Calocation $calocation,UserService $userservice)
     {
-        //
+        $user = Auth::user();
+        $calocation =  $user->calocations()->where('calocations.status','active')->with(['categories.depenses.user',
+        'categories.depenses.payments' => function ($q) {
+        $q->where('status', 'pending');
+        },
+        'categories.depenses.payments.fromUser',
+        'categories.depenses.payments.toUser'])->first();
+        
+        $users = $calocation->users()->get();
+
+        $isOwner = $users->where('id',  $user->id)->first()?->pivot->type === 'owner';
+        $data =[
+            'calocation'=>$calocation,
+            'users'=>$users,
+            'isOwner'=>$isOwner,
+            'userservice'=>$userservice,
+        ];
+        
+        return view('calocations.show',$data);
+        
+       
     }
 
     /**
@@ -112,6 +131,6 @@ class CalocationController extends Controller
     public function destroy(Calocation $calocation)
     {
         $calocation->delete();
-        return redirect()->route('colocations.index');
+        return redirect()->route('colocations.show');
     }
 }

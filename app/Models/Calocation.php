@@ -25,7 +25,4 @@ class Calocation extends Model
       return  $this->hasMany(category::class);
 }
 
- public function Payment(){
-      return  $this->hasMany(Payment::class);
-}
 }

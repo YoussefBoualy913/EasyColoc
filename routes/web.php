@@ -3,6 +3,7 @@
 use App\Http\Controllers\CalocationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ require __DIR__.'/auth.php';
 
 Route::prefix('/calocation')->controller(CalocationController::class)->group( function() {
     Route::get('/index','index')->name('colocations.index');
+    Route::get('/show/{calocation}','show')->name('colocations.show');
     Route::get('/create','create')->name('colocations.create');
     Route::post('/store','store')->name('colocations.store');
 });
@@ -40,5 +42,12 @@ Route::prefix('/depenses')->controller(DepenseController::class)->group( functio
     Route::get('/create','create')->name('depenses.create');
     Route::post('/store/{calocation}','store')->name('depenses.store');
     Route::delete('/destroy/{depense}','destroy')->name('depenses.destroy');
+});
+
+Route::prefix('/payments')->controller(PaymentController::class)->group( function() {
+    Route::post('/payer/{payment}','payer')->name('payments.payer');
+    // Route::get('/create','create')->name('depenses.create');
+    // Route::post('/store/{calocation}','store')->name('depenses.store');
+    // Route::delete('/destroy/{depense}','destroy')->name('depenses.destroy');
 });
 

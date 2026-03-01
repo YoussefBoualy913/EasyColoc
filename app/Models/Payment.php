@@ -7,20 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
      protected $fillable = [
-        'name',
+        'amount',
+        'from_user_id',
+        'to_user_id',
+        'depense_id',
+        'status',
     ];
 
      protected $guarded = [
         'id'
     ];
 
-    public function calocation(){
-      return  $this->belongsTo(Calocation::class);
-    }
+    public function fromUser(){
+     return  $this->belongsTo(User::class,'from_user_id');
+   }
+    public function toUser(){
+     return  $this->belongsTo(User::class,'to_user_id');
+   }
 
-     public function user(){
-      return  $this->belongsTo(User::class);
-    }
 
      public function depense(){
       return  $this->belongsTo(Depense::class);
