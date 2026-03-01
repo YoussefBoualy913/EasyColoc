@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_banned',
+        'reputation_score',
     ];
 
     /**
@@ -54,8 +56,15 @@ class User extends Authenticatable
       return  $this->hasMany(Depense::class);
 }
 
- public function Payment(){
-      return  $this->hasMany(Payment::class);
+
+public function fromPayments()
+{
+    return $this->hasMany(Payment::class, 'from_user_id');
+}
+
+public function toPayments()
+{
+    return $this->hasMany(Payment::class, 'to_user_id');
 }
 
 public function getInitialsAttribute()
@@ -67,4 +76,6 @@ public function getInitialsAttribute()
 
     return strtoupper($first . $second);
 }
+
+
 }
