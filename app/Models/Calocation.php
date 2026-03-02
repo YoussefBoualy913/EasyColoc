@@ -10,6 +10,7 @@ class Calocation extends Model
 
      protected $fillable = [
         'name',
+        'status',
       
     ];
 

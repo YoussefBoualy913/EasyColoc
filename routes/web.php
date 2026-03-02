@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CalocationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashbordController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -12,9 +13,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [DashbordController::class, 'userdashboad'])->name('userdashboard');
+Route::get('/admin/dashboard', [DashbordController::class, 'adminDashboad'])->name('admindashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -53,6 +54,8 @@ Route::prefix('/payments')->controller(PaymentController::class)->group( functio
 
 Route::prefix('/users')->controller(UserController::class)->group( function() {
     Route::post('/retreit/{user}','retreit')->name('users.retreit');
+    Route::patch('/banni/{user}','banni')->name('users.banni');
+    Route::patch('/unban/{user}','unban')->name('users.unban');
   
 
 });

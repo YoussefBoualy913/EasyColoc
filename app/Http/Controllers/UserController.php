@@ -25,6 +25,22 @@ class UserController extends Controller
         }
     }
 
+    public function banni(User $user)
+    {  
+        $user->update([
+            'status'=>"banni"
+        ]);
+        return back()->with('message','user banni avec succer');
+    }
+
+     public function unban(User $user)
+    {
+         $user->update([
+            'status'=>"actif"
+        ]);
+         return back()->with('message','user unbani avec succer');;
+    }
+
   
 
 

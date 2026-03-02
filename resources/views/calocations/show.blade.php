@@ -87,7 +87,7 @@
                         <p class="text-sm font-semibold text-slate-900 truncate">{{auth()->user()->name}}</p>
                         <p class="text-xs text-slate-500 truncate">{{auth()->user()->email}}</p>
                     </div>
-                    <a href="landing.html"
+                    <a href="{{ route('logout') }}"
                         class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition"
                         title="Déconnexion">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

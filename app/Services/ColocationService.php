@@ -19,17 +19,19 @@ class ColocationService
  {
      DB::transaction(function() use($calocation){
 
-
+       
         $users = $calocation->users()->wherePivotNull('left_at')->get();
+        
+         $calocation->update([
+           'status'=>'annulee'
+        ]);
         foreach($users as $user){
         $user->calocations()->updateExistingPivot($calocation->id, [
             'left_at' => now(),
         ]);
         }
 
-        $calocation->update([
-           'status'=>'inactive'
-        ]);
+       
      });
     
  }

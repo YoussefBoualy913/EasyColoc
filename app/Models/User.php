@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_banned',
+        'status',
         'reputation_score',
     ];
 
@@ -75,6 +75,13 @@ public function getInitialsAttribute()
     $second = $parts[1][0] ?? '';
 
     return strtoupper($first . $second);
+}
+
+public function is_admin()
+{
+  if($this->role === "admin" )
+    {return true;
+    }else{return false;}
 }
 
 
