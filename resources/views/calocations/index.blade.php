@@ -164,7 +164,7 @@
             <section>
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                     @foreach($calocations as $calocation) 
-                      @if($calocation->status === "active") 
+                      @if($calocation->status === "active" && is_null($calocation->member(auth()->user())->pivot->left_at))
                     <!-- Colocation 1 – Active, Owner -->
                      <a href="{{ route('colocations.show',$calocation->id)}}"
                         class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all overflow-hidden">
@@ -249,7 +249,7 @@
                   @endif
                                 
                                 
-                    @if($calocation->status === "inactive")        
+                    @if($calocation->status === "inactive" || !is_null($calocation->member(auth()->user())->pivot->left_at))        
 
                     <!-- Colocation 6 – Cancelled -->
                     <div

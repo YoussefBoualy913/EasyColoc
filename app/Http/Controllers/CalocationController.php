@@ -7,6 +7,7 @@ use App\Models\Calocation;
 use App\Models\category;
 use App\Models\Membership;
 use App\Models\User;
+use App\Services\ColocationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,10 +24,10 @@ class CalocationController extends Controller
         $is_exists =  $user->calocations()->with(['users','categories.depenses.user'])->exists();
         if($is_exists){
          $calocations = $user->calocations()->with(['users','categories.depenses.user'])->paginate(3);
-       
+        
         $data =[
             'calocations'=>$calocations,
-            'userservice'=>$userservice
+            'userservice'=>$userservice,
         ];
         
         return view('calocations.index',$data);
@@ -50,8 +51,11 @@ class CalocationController extends Controller
      */
     public function store(CalocationRequeste $request)
     {
-        
-        DB::transaction(function () use ($request) {
+         $user = Auth::user();
+         $hasactivecoloc = $user->calocations()->where('calocations.status','active')->exists();
+       
+        if(!$hasactivecoloc ||   $user->role === "admin"){
+        DB::transaction(function () use ($request,$user) {
    
             $calocation = Calocation::create($request->validated());
             if($request->has('categories')){
@@ -68,7 +72,7 @@ class CalocationController extends Controller
                
             }
 
-            $user = Auth::user();
+           
             Membership::create([
                 'calocation_id'=> $calocation->id,
                 'user_id'=> $user->id,
@@ -78,7 +82,13 @@ class CalocationController extends Controller
             ]);
     
         });
-     return redirect()->route('colocations.index');
+        return redirect()->route('colocations.index');
+        }
+
+        if($hasactivecoloc && $user->role === "member")
+            {
+                 return redirect()->route('colocations.index')->with('message','vous avez deja une colocation!'); 
+            }
     }
 
     /**
@@ -87,14 +97,15 @@ class CalocationController extends Controller
     public function show(Calocation $calocation,UserService $userservice)
     {
         $user = Auth::user();
-        $calocation =  $user->calocations()->where('calocations.status','active')->with(['categories.depenses.user',
+        $calocation =  $user->calocations()->where('calocations.status','active')->where('calocations.id',$calocation->id)
+        ->with(['categories.depenses.user',
         'categories.depenses.payments' => function ($q) {
         $q->where('status', 'pending');
         },
         'categories.depenses.payments.fromUser',
         'categories.depenses.payments.toUser'])->first();
         
-        $users = $calocation->users()->get();
+        $users = $calocation->users()->wherePivotNull('left_at')->get();
 
         $isOwner = $users->where('id',  $user->id)->first()?->pivot->type === 'owner';
         $data =[
@@ -132,5 +143,11 @@ class CalocationController extends Controller
     {
         $calocation->delete();
         return redirect()->route('colocations.show');
+    }
+
+      public function cancel(Calocation $calocation,ColocationService $colocationService)
+    {
+       $colocationService->annulerColoc($calocation);
+       return redirect()->route('colocations.index');
     }
 }

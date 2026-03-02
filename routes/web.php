@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +29,7 @@ Route::prefix('/calocation')->controller(CalocationController::class)->group( fu
     Route::get('/show/{calocation}','show')->name('colocations.show');
     Route::get('/create','create')->name('colocations.create');
     Route::post('/store','store')->name('colocations.store');
+    Route::patch('/cancel/{calocation}','cancel')->name('colocations.cancel');
 });
 
 Route::prefix('/categories')->controller(CategoryController::class)->group( function() {
@@ -46,8 +48,12 @@ Route::prefix('/depenses')->controller(DepenseController::class)->group( functio
 
 Route::prefix('/payments')->controller(PaymentController::class)->group( function() {
     Route::post('/payer/{payment}','payer')->name('payments.payer');
-    // Route::get('/create','create')->name('depenses.create');
-    // Route::post('/store/{calocation}','store')->name('depenses.store');
-    // Route::delete('/destroy/{depense}','destroy')->name('depenses.destroy');
+   
+});
+
+Route::prefix('/users')->controller(UserController::class)->group( function() {
+    Route::post('/retreit/{user}','retreit')->name('users.retreit');
+  
+
 });
 

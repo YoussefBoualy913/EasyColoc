@@ -13,9 +13,9 @@ class PaymentService
          DB::transaction(function () use($payment,$touser,$fromuser){
              
              
-             $fromsold = $fromuser->pivot->sold;
-             $tosold = $touser->pivot->sold;
-             $calocation = $fromuser->calocations->where('status','active');
+             $calocation = $fromuser->calocations->where('status','active')->first();
+             $fromsold = $calocation->member($fromuser)->pivot->sold;
+             $tosold = $calocation->member($touser)->pivot->sold;
              
              $payment->update([
                  'status'=>'paid'

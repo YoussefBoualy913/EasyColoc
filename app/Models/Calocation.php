@@ -25,4 +25,9 @@ class Calocation extends Model
       return  $this->hasMany(category::class);
 }
 
+public function member(User $user)
+{
+    return $this->users()->where('users.id', $user->id)->first();
+}
+
 }

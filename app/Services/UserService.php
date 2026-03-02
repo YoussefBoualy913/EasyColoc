@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Calocation;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\DB;
 
 use function Symfony\Component\Clock\now;
@@ -19,10 +20,13 @@ class UserService
 
  public function retrait(User $user,PaymentService $paymentService)
  { 
-    if($user->pivot->type != "owner")
+     $calocation = $user->calocations->where('status','active')->first();
+    
+     $user =  $calocation->member($user);
+    //  $owner = ;
+     if($user->pivot->type != "owner")
         {
-    $sold = $user->pivot->sold;
-    $calocation = $user->calocations->where('status','active');
+            $sold = $user->pivot->sold;
     if($sold >= 0)
         {
             DB::transaction(function () use($user,$paymentService,$calocation) {
@@ -52,7 +56,7 @@ class UserService
             ]);
             $reputation = $user->reputation_score + 1;
 
-             $payment->update([
+             $user->update([
                         'reputation_score'=>$reputation
                     ]);
 
@@ -69,7 +73,7 @@ class UserService
             if($frompayments){
                 foreach($frompayments as $payment){
 
-                    $touser = $payment->toUser()->get();
+                    $touser = $payment->toUser()->first();
                     $paymentService->payer($touser,$user,$payment);
                 }
             }  
@@ -78,7 +82,7 @@ class UserService
             if($topayments){
                 foreach($topayments as $payment){
 
-                    $fromuser = $payment->fromUser()->get();
+                    $fromuser = $payment->fromUser()->first();
                     $paymentService->payer($user,$fromuser,$payment);
                 }
             }
@@ -87,24 +91,28 @@ class UserService
              'left_at' => now()
             ]);
 
-            if(auth()->id == $user->id)
+            if(Auth::user()->id === $user->id)
+               {
             $reputation = $user->reputation_score - 1;
 
              $user->update([
                         'reputation_score'=>$reputation
             ]);
-
-            if(auth()->id != $user->id)
-            $reputation = auth()->reputation_score - 1;
+               }
+            if(Auth::user()->id != $user->id)
+                {
+            $reputation = Auth::user()->reputation_score - 1;
 
             Auth::user()->update([
                         'reputation_score'=>$reputation
             ]);
-
+           }
             
         });
         }
         }
  }
+
+
 
 }

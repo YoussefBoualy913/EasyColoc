@@ -138,8 +138,9 @@
                         <span class="hidden sm:inline">Annuler</span>
                     </button>
                     @else 
-                    
-                    <button
+                    <form action="{{ route('users.retreit',auth()->user()->id) }}" method="POST">
+                        @csrf
+                    <button type="submit"
                         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-amber-300 text-amber-600 text-sm font-semibold hover:bg-amber-50 transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,6 +148,7 @@
                         </svg>
                         Quitter
                     </button>
+                    </form>
                     @endif
                 </div>
             </div>
@@ -197,8 +199,11 @@
                             </div>
                             @endif
                              @if($isOwner  && $user->id !== auth()->id())
-                            <button
+                             <form action="{{ route('users.retreit',$user->id) }}" method="POST">
+                                @csrf
+                            <button type="submit"
                                 class="text-xs text-red-500 hover:text-red-700 font-medium transition">Retirer</button>
+                             </form>   
                             @endif
                         </div>
                     </div>
@@ -563,7 +568,7 @@
                 <p class="mt-1">Si des membres ont encore des dettes, leur réputation sera impactée.</p>
             </div>
             {{-- <!-- {{ route('colocations.cancel', $colocation) }} --> --}}
-            <form action="#" method="POST">
+            <form action="{{ route('colocations.cancel',$calocation->id) }}" method="POST">
                 @csrf @method('PATCH') 
                 <div class="flex gap-3">
                     <button type="button" onclick="document.getElementById('cancel-modal').classList.add('hidden')"
