@@ -19,7 +19,7 @@ class InvitationController extends Controller
     ]);
 
     $invitation = Invitation::create([
-        'colocation_id' => $calocation->id,
+        'calocation_id' => $calocation->id,
         'email' => $request->email,
         'token' => Str::uuid(),
         'expires_at' => now()->addDays(3),
@@ -28,6 +28,11 @@ class InvitationController extends Controller
     Mail::to($request->email)->send(new ColocationInvitationMail($invitation));
 
     return back()->with('success', 'Invitation envoyée avec succès.');
+}
+
+
+public function show(Invitation $invitation){
+   return view('emails.calocationInvitation')->with(['invitation'=>$invitation]);
 }
 
 public function accept($token)
@@ -48,10 +53,13 @@ public function accept($token)
     }
 
    
-     $calocation =  $user->calocations()->where('calocations.status', 'active')->first();
-    $leftAt = $calocation->pivot->left_at;
-    if ($leftAt) {
-        abort(403, 'Vous avez déjà une colocation active.');
+   $hasActiveColocation = $user->calocations()
+    ->where('calocations.status', 'active')
+    ->wherePivotNull('left_at')
+    ->exists();
+
+     if ($hasActiveColocation && $user->role !== 'admin') {
+       abort(403, 'Vous avez déjà une colocation active.');
     }
 
     $invitation->calocation->users()->attach($user->id, [
@@ -72,6 +80,6 @@ public function refuse($token)
 
     $invitation->delete();
 
-    return back()->with('info', 'Invitation refusée.');
+    return redirect()->route('colocations.index')->with('info', 'Invitation refusée.');
 }
 }

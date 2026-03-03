@@ -22,20 +22,13 @@ class ColocationInvitationMail extends Mailable
         //
     }
 
-
-    public function build()
-    {
-        return $this->subject('Invitation à rejoindre une colocation EasyColoc')
-            ->view('emails.colocation-invitation');
-    }
-
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Colocation Invitation Mail',
+            subject: 'Invitation à rejoindre une colocation EasyColoc',
         );
     }
 
@@ -45,7 +38,10 @@ class ColocationInvitationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+           view: 'emails.lienInvitation',
+            with: [
+                'invitation' => $this->invitation,
+            ],
         );
     }
 

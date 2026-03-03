@@ -87,14 +87,17 @@
                         <p class="text-sm font-semibold text-slate-900 truncate">{{auth()->user()->name}}</p>
                         <p class="text-xs text-slate-500 truncate">{{auth()->user()->email}}</p>
                     </div>
-                    <a href="{{ route('logout') }}"
+                    <form action="{{ route('logout') }}" method="POST">
+                      @csrf
+                    <button type="submit"
                         class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition"
                         title="Déconnexion">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                         </svg>
-                    </a>
+                    </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -526,7 +529,7 @@
                 <p class="text-sm text-slate-500 mt-1">Un email d'invitation sera envoyé</p>
             </div>
            
-            <form action="{{ route('colocations.invite',$colocation) }}" method="POST" class="space-y-4">
+            <form action="{{ route('colocations.invite',$calocation->id) }}" method="POST" class="space-y-4">
                  @csrf 
                 <div>
                     <label for="invite-email" class="block text-sm font-medium text-slate-700 mb-1.5">Email du

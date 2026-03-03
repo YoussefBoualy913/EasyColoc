@@ -65,6 +65,7 @@ Route::prefix('/users')->controller(UserController::class)->group( function() {
 Route::controller(InvitationController::class)->group( function() {
 Route::post('/colocations/{calocation}/invite', 'sendInvitation')->name('colocations.invite');
 
+Route::get('/invitations/show/{invitation}', 'show')->name('invitations.show');
 Route::get('/invitations/accept/{token}', 'accept');
 Route::get('/invitations/refuse/{token}','refuse');
 });
