@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
 
     public function calocations(){
-    return $this->belongsToMany(Calocation::class,'memberships')->withPivot(['type', 'status', 'left_at','token','sold']);
+    return $this->belongsToMany(Calocation::class,'memberships')->withPivot(['type', 'status', 'left_at','joined_at','sold']);
  }
 
   public function depenses(){
@@ -83,6 +83,8 @@ public function is_admin()
     {return true;
     }else{return false;}
 }
+
+
 
 
 }

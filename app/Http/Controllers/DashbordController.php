@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class DashbordController extends Controller
 {
     public function userdashboad(){
-
+        return view('dashboard');
     }
 
     public function adminDashboad(){

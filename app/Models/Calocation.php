@@ -19,11 +19,15 @@ class Calocation extends Model
     ];
 
  public function users(){
-    return $this->belongsToMany(User::class,'memberships')->withPivot(['type', 'status', 'left_at','token','sold']);
+    return $this->belongsToMany(User::class,'memberships')->withPivot(['type', 'status', 'left_at','joined_at','sold']);
  }
 
   public function categories(){
       return  $this->hasMany(category::class);
+}
+
+  public function invitations(){
+      return  $this->hasMany(Invitation::class);
 }
 
 public function member(User $user)

@@ -525,9 +525,9 @@
                 <h3 class="text-lg font-bold text-slate-900">Inviter un colocataire</h3>
                 <p class="text-sm text-slate-500 mt-1">Un email d'invitation sera envoyé</p>
             </div>
-            {{-- <!-- {{ route('invitations.store', $colocation) }} --> --}}
-            <form action="#" method="POST" class="space-y-4">
-                <!-- @csrf -->
+           
+            <form action="{{ route('colocations.invite',$colocation) }}" method="POST" class="space-y-4">
+                 @csrf 
                 <div>
                     <label for="invite-email" class="block text-sm font-medium text-slate-700 mb-1.5">Email du
                         colocataire</label>

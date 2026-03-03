@@ -4,6 +4,7 @@ use App\Http\Controllers\CalocationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashbordController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -31,6 +32,7 @@ Route::prefix('/calocation')->controller(CalocationController::class)->group( fu
     Route::get('/create','create')->name('colocations.create');
     Route::post('/store','store')->name('colocations.store');
     Route::patch('/cancel/{calocation}','cancel')->name('colocations.cancel');
+    
 });
 
 Route::prefix('/categories')->controller(CategoryController::class)->group( function() {
@@ -60,3 +62,9 @@ Route::prefix('/users')->controller(UserController::class)->group( function() {
 
 });
 
+Route::controller(InvitationController::class)->group( function() {
+Route::post('/colocations/{calocation}/invite', 'sendInvitation')->name('colocations.invite');
+
+Route::get('/invitations/accept/{token}', 'accept');
+Route::get('/invitations/refuse/{token}','refuse');
+});
